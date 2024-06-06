@@ -25,18 +25,22 @@ int main()
 	gv->setAlignment(Align(4));
 
 	IRBuilder<> builder(c);
-	viewPtr<Type> int32Ty = Type::getInt32Ty(c);
 	std::vector<Type *> paramTys(2, builder.getInt32Ty());
-	viewPtr<FunctionType> funcTy = FunctionType::get(int32Ty, paramTys, false);
+	viewPtr<FunctionType> funcTy = FunctionType::get(builder.getInt32Ty(), paramTys, false);
 	viewPtr<Function> func = Function::Create(funcTy, GlobalValue::ExternalLinkage, "test_function IR", m.get());
-	func->getArg(0)->setName("a");
-	func->getArg(1)->setName("b");
+
+	viewPtr<Value> arg0 = func->getArg(0);
+	arg0->setName("a");
+	viewPtr<Value> arg1 = func->getArg(1);
+	arg1->setName("b");
 
 	viewPtr<BasicBlock> b = BasicBlock::Create(c, "entry_block", func);
 	builder.SetInsertPoint(b);
 
-	viewPtr<ConstantInt> one = builder.getInt32(1);
-	builder.CreateRet(one);
+	viewPtr<ConstantInt> two = builder.getInt32(2);
+	viewPtr<Value> tmp = builder.CreateMul(arg1, two, "mul_ans");
+  	viewPtr<Value> ret = builder.CreateAdd(arg0, tmp, "add_ans");
+	builder.CreateRet(ret);
 	m->print(outs(), nullptr);
 	return 0;
 }
