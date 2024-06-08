@@ -17,8 +17,8 @@ viewPtr<GlobalVariable> createGlobalVariable(Module* m, StringRef Name, viewPtr<
 
 viewPtr<Function> createFunction(viewPtr<Module> mod, viewPtr<Type> Ret_type, ArrayRef<viewPtr<Type>> Params, std::string Name, bool isVarArg = false)
 {
-    viewPtr<FunctionType> func_Type = FunctionType::get(Ret_type, Params, isVarArg);
-    return Function::Create(func_Type, Function::ExternalLinkage, Name, mod);
+	viewPtr<FunctionType> func_Type = FunctionType::get(Ret_type, Params, isVarArg);
+	return Function::Create(func_Type, Function::ExternalLinkage, Name, mod);
 }
 
 int main()
@@ -44,7 +44,7 @@ int main()
 
 	viewPtr<ConstantInt> two = builder.getInt32(2);
 	viewPtr<Value> tmp = builder.CreateMul(arg1, two, "mul_ans");
-  	viewPtr<Value> ret = builder.CreateAdd(arg0, tmp, "add_ans");
+	viewPtr<Value> ret = builder.CreateAdd(arg0, tmp, "add_ans");
 	builder.CreateRet(ret);
 	m->print(outs(), nullptr);
 	return 0;
