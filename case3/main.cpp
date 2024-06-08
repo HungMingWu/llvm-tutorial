@@ -15,6 +15,12 @@ viewPtr<GlobalVariable> createGlobalVariable(Module* m, StringRef Name, viewPtr<
 	return m->getNamedGlobal(Name);
 }
 
+viewPtr<Function> createFunction(viewPtr<Module> mod, viewPtr<Type> Ret_type, ArrayRef<viewPtr<Type>> Params, std::string Name, bool isVarArg = false)
+{
+    viewPtr<FunctionType> func_Type = FunctionType::get(Ret_type, Params, isVarArg);
+    return Function::Create(func_Type, Function::ExternalLinkage, Name, mod);
+}
+
 int main()
 {
 	LLVMContext c;
@@ -25,10 +31,8 @@ int main()
 	gv->setAlignment(Align(4));
 
 	IRBuilder<> builder(c);
-	viewPtr<Type> int32Ty = Type::getInt32Ty(c);
-	std::vector<Type *> paramTys(2, builder.getInt32Ty());
-	viewPtr<FunctionType> funcTy = FunctionType::get(int32Ty, paramTys, false);
-	viewPtr<Function> func = Function::Create(funcTy, GlobalValue::ExternalLinkage, "test_function IR", m.get());
+	SmallVector<Type *> paramTys(2, builder.getInt32Ty());
+	viewPtr<Function> func = createFunction(m.get(), builder.getInt32Ty(), paramTys, "test_function IR");
 	func->getArg(0)->setName("a");
 	func->getArg(1)->setName("b");
 
